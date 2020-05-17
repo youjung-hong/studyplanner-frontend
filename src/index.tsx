@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import App from './components/App/App';
 import * as serviceWorker from './serviceWorker';
+import { TaskListContextProvider } from './contexts/TaskListContext';
 
 ReactDOM.render(
-  <React.StrictMode>
+  <TaskListContextProvider>
     <App />
-  </React.StrictMode>,
+  </TaskListContextProvider>,
   document.getElementById('root')
 );
 
