@@ -1,39 +1,39 @@
 import React, { useState } from 'react';
-import TaskItem from '../classes/TaskItem';
+import TaskItem from '../models/TaskItem';
 
 interface TaskListContextValue {
   state: {
+    rowCount: number,
     taskList: TaskItem[],
-    currentTask: TaskItem|null,
   },
   actions: {
+    setRowCount: Function,
     setTaskList: Function,
-    setCurrentTask: Function,
   },
 }
 
 const TaskListContext = React.createContext<TaskListContextValue>({
   state: {
+    rowCount: 24,
     taskList: [],
-    currentTask: null,
   },
   actions: {
+    setRowCount: () => {},
     setTaskList: () => {},
-    setCurrentTask: () => {}
   }
 })
 
 export function TaskListContextProvider({ children } : { children: JSX.Element }) {
+  const [rowCount, setRowCount] = useState(24);
   const [taskList, setTaskList] = useState([]);
-  const [currentTask, setCurrentTask] = useState(null);
   const value = {
     state: {
+      rowCount,
       taskList,
-      currentTask
     },
     actions: {
+      setRowCount,
       setTaskList,
-      setCurrentTask
     }
   }
 

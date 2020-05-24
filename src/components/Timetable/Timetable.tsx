@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import OneTimetable, { TaskItem as TimetableTaskItem } from 'one-timetable'
-import TaskItem from '../../classes/TaskItem';
+import TaskItem from '../../models/TaskItem';
 
 interface TimetableProps {
   items: TaskItem[]
@@ -19,7 +19,6 @@ class Timetable extends React.Component<TimetableProps> {
   componentDidUpdate() {
     if (this.timetableRef.current) {
       this.timetableRef.current.innerHTML = ''
-      this.timetableRef.current.id = 'timetable-' + Date.now()
       new OneTimetable(this.timetableRef.current.id, this.props.items.map(item => TimetableTaskItem.clone(item)))
     }
   }

@@ -1,36 +1,51 @@
 import React, { useState } from 'react';
-import TaskInput from '../TaskInput/TaskInput'
-import TaskItem from '../../classes/TaskItem'
-import TaskSpan from '../TaskInput/TaskSpan'
+import TaskItem from '../../models/TaskItem'
 
-function TaskItemElement({ item, onClickSaveBtn, onClickDeleteBtn }
+function TaskItemElement({ item, onCreateItem, onUpdateItem, onDeleteItem }
   : { 
       item: TaskItem, 
-      onClickSaveBtn: (item: TaskItem) => void,
-      onClickDeleteBtn: (item: TaskItem) => void
+      onCreateItem: (todo: string) => void,
+      onUpdateItem: (item: TaskItem) => void,
+      onDeleteItem: (item: TaskItem) => void
     }) {
+  const [completed, setCompleted] = useState(item?.completed || false)
+  const [todo, setTodo] = useState(item?.todo || '')
   const [editable, setEditable] = useState(false)
   return (
-          <div className="taskItem">
-            {item.id} -
-            {editable ?
-              <TaskInput 
-                item={item}
-                onClickSaveBtn={(item) => { 
-                  setEditable(false)
-                  onClickSaveBtn(item)
+          <div className="TaskItem">
+            <span className="TaskItem-input input-completed">
+              <input type="checkbox" checked={completed} onChange={e => setCompleted(!!e.target.checked)} disabled={!item}/>
+            </span>
+            <span className="TaskItem-input input-todo">
+              <input 
+                value={todo}
+                onChange={e => {
+                  setTodo(e.target.value || '')
                 }}
-                onClickCancelBtn={() => {
-                  setEditable(false)
+                onFocus={() => setEditable(true)}
+                onBlur={() => {
+                  setEditable(false);
+
+                  if (!item) {
+                    onCreateItem(todo)
+                    return;
+                  }
+
+                  item.completed = completed;
+                  item.todo = todo;
+                  onUpdateItem(item)
                 }}
               />
-              : <TaskSpan 
-                  item={item}
-                  onClickEditBtn={() => { 
-                    setEditable(true)
-                  }}
-                  onClickDeleteBtn={() => { onClickDeleteBtn(item) }}
-                />
+            </span>
+            {editable ? 
+              <button className="TaskItem-btn btn-cancel" onClick={() => setEditable(false) }>취소</button> :
+              <button className="TaskItem-btn btn-delete" onClick={() => {
+                if (!item) {
+                  return;
+                }
+
+                onDeleteItem(item) 
+              }}>삭제</button>
             }
           </div>
         );

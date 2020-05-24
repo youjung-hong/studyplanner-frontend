@@ -1,13 +1,62 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
+    'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+.App {
+  display: flex;
+  justify-content: space-between;
+  padding: 3%;
+  overflow: hidden;
+}
+
+.App-left {
+  width: 72%;
+}
+
+.App-right {
+  width: 25%;
+}
+
+.TaskList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.TaskItem {
+  height: 30px;
+  display: flex;
+}
+
+.input-completed,
+.TaskItem-btn {
+  width: 10%;
+  height: 100%;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-todo {
+  height: 100%;
+  border: 1px solid black;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.input-todo input {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
 }
