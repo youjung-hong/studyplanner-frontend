@@ -12,14 +12,14 @@ class Timetable extends React.Component<TimetableProps> {
   componentDidMount() {
     if (this.timetableRef.current) {
       this.timetableRef.current.id = 'timetable-' + Date.now()
-      new OneTimetable(this.timetableRef.current.id, this.props.items.map(item => TimetableTaskItem.clone(item)))
+      // new OneTimetable(this.timetableRef.current.id, this.props.items.map(item => TimetableTaskItem.clone(item)))
     }
   }
 
   componentDidUpdate() {
     if (this.timetableRef.current) {
       this.timetableRef.current.innerHTML = ''
-      new OneTimetable(this.timetableRef.current.id, this.props.items.map(item => TimetableTaskItem.clone(item)))
+      // new OneTimetable(this.timetableRef.current.id, this.props.items.map(item => TimetableTaskItem.clone(item)))
     }
   }
 

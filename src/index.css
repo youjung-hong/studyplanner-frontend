@@ -31,6 +31,10 @@ code {
   padding: 0;
 }
 
+.TaskListItem {
+  display: flex;
+}
+
 .TaskItem {
   height: 30px;
   display: flex;
