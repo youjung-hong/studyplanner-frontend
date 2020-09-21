@@ -10,11 +10,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-.App {
+.App-contents {
   display: flex;
   justify-content: space-between;
   padding: 3%;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .App-left {
