@@ -25,30 +25,29 @@ function SubjectSelector({ subjects, selectedId, onChange }: SubjectSelectorProp
 
 type TaskItemEditableProps = {
   itemKey: string | number,
-  task: Task | undefined,
+  task: Task | TaskFormData,
   subjects: Subject[],
   onCreate: (data: { subjectId: number, title: string, status: TaskStatus }) => void,
   onUpdate: (taskId:number, data: TaskFormData) => void,
-  onCancel: () => void
+  onCancel: () => void,
 }
 
 export function TaskItemEditable({ itemKey, task, subjects, onCreate, onUpdate, onCancel }: TaskItemEditableProps) {
   const [state, setState] = useState({
-    subjectId: task ? task.subjectId : subjects.length ? subjects[0].id : 0,
-    title: task ? task.title : '',
-    status: task ? task.status : TaskStatus.NOT_STARTED,
+    subjectId: task.subjectId,
+    title: task.title,
+    status: task.status,
   });
   
   useEffect(() => {
-    if (!task && subjects.length) {
-      setState({
-        ...state,
-        subjectId: subjects[0].id
-      })
-    }
-  }, [subjects]);
+    setState({
+      subjectId: task.subjectId,
+      title: task.title,
+      status: task.status,
+    })
+  }, [task]);
 
-  return (<li key={itemKey}>
+  return (<li>
     <span>
       <SubjectSelector
         subjects={subjects} 
@@ -91,7 +90,7 @@ export function TaskItemEditable({ itemKey, task, subjects, onCreate, onUpdate, 
       <input 
         type="radio" 
         disabled={!subjects.length} 
-        name={`status-${itemKey}`}
+        name={`${itemKey}`}
         value={TaskStatus.FINISHED} 
         checked={state.status === TaskStatus.FINISHED}
         onChange={(e) => {
@@ -101,7 +100,7 @@ export function TaskItemEditable({ itemKey, task, subjects, onCreate, onUpdate, 
       <input 
         type="radio" 
         disabled={!subjects.length} 
-        name={`status-${itemKey}`}
+        name={`${itemKey}`}
         value={TaskStatus.PUT_OFF} 
         checked={state.status === TaskStatus.PUT_OFF}
         onChange={(e) => {
@@ -122,7 +121,7 @@ export function TaskItemEditable({ itemKey, task, subjects, onCreate, onUpdate, 
         return;
       }
 
-      task ? onUpdate(task.id, {
+      'id' in task ? onUpdate(task.id, {
         ...state,
         date: task.date
       }) : onCreate(state)

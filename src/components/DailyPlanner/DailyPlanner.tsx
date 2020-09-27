@@ -8,25 +8,38 @@ import { TaskTimeFormData, TaskTime } from '../../models/TaskTime';
 import { Subject } from '../../models/Subject';
 import { getTasks, createTask, updateTask, deleteTask } from '../../utils/TaskApiUtil';
 import { getTaskMeta } from '../../utils/TaskMetaApiUtil';
-import { TaskStatus, TaskFormData } from '../../models/Task';
+import { TaskStatus, TaskFormData, Task } from '../../models/Task';
+import { TaskTimeTable } from './TaskTimeTable';
+
+type DailyPlannerPlannerDataStateType = {
+  subjects: Subject[],
+  subjectMap: Map<number, Subject>,
+  tasks: Task[],
+  taskTimes: TaskTime[],
+  isLoading: boolean
+}
+type DailyPlannerModalDataStateType = {
+  show: boolean,
+  taskId: number,
+  taskTime: TaskTime|null
+}
 
 export function DailyPlanner() {
   const [date, setDate] = useState(moment().startOf('day').toDate());
-  const [plannerData, setPlannerData] = useState({
+  const [plannerData, setPlannerData] = useState<DailyPlannerPlannerDataStateType>({
     subjects: [],
     subjectMap: new Map(),
     tasks: [],
     taskTimes: [],
     isLoading: false,
   });
-  const [modalData, setModalData] = useState({
+  const [modalData, setModalData] = useState<DailyPlannerModalDataStateType>({
     show: false,
     taskId: 0,
     taskTime: null,
   });
 
   useEffect(() => {
-    console.log(`[TaskList].useEffect`)
     setPlannerData({
       ...plannerData,
       isLoading: true
@@ -43,7 +56,7 @@ export function DailyPlanner() {
           subjectMap,
           subjects: res.subjects,
           tasks: res.tasks || [],
-          taskTimes: [],
+          taskTimes: res.taskTimeLogs || [],
         })
       }).catch(() => {
         setPlannerData({ ...plannerData, isLoading: false })
@@ -141,13 +154,7 @@ export function DailyPlanner() {
   const getTaskList = () => {
     return getTasks(date)
       .then(res => {
-        const emptyTask = 10 - res.content.length;
-        const tasks = res.content;
-        for (let i = 0; i < emptyTask; i += 1) {
-          tasks.push(null);
-        }
-
-        return tasks;
+        return res.content;
       })
   }
 
@@ -197,10 +204,18 @@ export function DailyPlanner() {
       isLoading: true
     })
 
+    let newTasks: Task[] = [];
     deleteTask(taskId)
       .then(getTaskList)
       .then((tasks) => {
-        setPlannerData({ ...plannerData, tasks, isLoading: false })
+        newTasks = tasks;
+      }).then(getTaskTimeList)
+      .then((taskTimes) => {
+        setPlannerData({ ...plannerData, 
+          tasks: newTasks, 
+          taskTimes,
+          isLoading: false
+        });
       })
       .catch(() => {
         setPlannerData({ ...plannerData, isLoading: false })
@@ -231,7 +246,9 @@ export function DailyPlanner() {
       date={date}
       onChangeDate={setDate} 
     />
+    <div className="plannerContent">
     <TaskList
+      date={date}
       subjects={plannerData.subjects}
       subjectMap={plannerData.subjectMap}
       tasks={plannerData.tasks}
@@ -245,5 +262,23 @@ export function DailyPlanner() {
         });
       }}
     ></TaskList>
+    <TaskTimeTable 
+      taskTimes={plannerData.taskTimes}
+      onUpdateOrDeleteTime={(taskTime) => {
+        const filtered = plannerData.taskTimes.filter(data => data.taskId === taskTime.taskId);
+
+        if (!filtered.length) {
+          alert('TaskId가 잘못되어 띄울 수가 없습니다.');
+          return;
+        }
+
+        setModalData({
+          show: true,
+          taskId: taskTime.taskId,
+          taskTime: filtered[0]
+        }) 
+      }}
+    ></TaskTimeTable>
+    </div>
   </div>)
 }

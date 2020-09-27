@@ -15,8 +15,8 @@ type TaskTimePopupProps = {
 
 export function TaskTimePopup({ taskId, taskTime, onCreate, onUpdate, onDelete, onClose }: TaskTimePopupProps) {
   const [value, onChange] = useState([
-    taskTime ? taskTime.startAt : new Date(),
-    taskTime ? taskTime.endAt : moment().add(1, 'hour').toDate()
+    taskTime ? new Date(taskTime.startAt) : new Date(),
+    taskTime ? new Date(taskTime.endAt) : moment().add(1, 'hour').toDate()
   ]);
   console.log(`[TaskTimePopup]`);
 

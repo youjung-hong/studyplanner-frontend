@@ -24,7 +24,7 @@ function get(url = '') {
     }).catch(err => {
       console.log(`[GET ${url}] ERROR`, err)
       clearTimeout(timerId)
-      alert(`[DELETE ${url}] ERROR`)
+      alert(`[GET ${url}] ERROR`)
     });
 }
 
@@ -60,7 +60,7 @@ function post(url = '', data = {}) {
   }).catch(err => {
     console.log(`[POST ${url}] ERROR`, err)
     clearTimeout(timerId)
-    alert(`[DELETE ${url}] ERROR`)
+    alert(`[POST ${url}] ERROR`)
   });
 }
 
@@ -95,7 +95,7 @@ function put(url = '', data = {}) {
   }).catch(err => {
     console.log(`[PUT ${url}] ERROR`, err)
     clearTimeout(timerId)
-    alert(`[DELETE ${url}] ERROR`)
+    alert(`[PUT ${url}] ERROR`)
   });
 }
 

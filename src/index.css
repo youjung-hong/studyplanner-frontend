@@ -25,6 +25,10 @@ code {
   width: 25%;
 }
 
+.plannerContent {
+  display: flex;
+}
+
 .TaskList {
   list-style: none;
   margin: 0;
@@ -63,4 +67,8 @@ code {
   height: 100%;
   padding: 0;
   border: 0;
+}
+
+#timetableRoot {
+  margin-left: 20px;
 }

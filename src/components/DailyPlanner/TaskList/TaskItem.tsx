@@ -5,7 +5,7 @@ import { Subject } from '../../../models/Subject';
 
 type TaskItemProps = {
   itemKey: string|number,
-  task?: Task,
+  task: Task|TaskFormData,
   subjects: Subject[],
   onCreate: (data: {subjectId: number, title: string, status: TaskStatus}) => void
   onUpdate: (taskId: number, data: TaskFormData) => Promise<void>
@@ -16,9 +16,9 @@ type TaskItemProps = {
 export function TaskItem({ itemKey, task, subjects, onCreate, onUpdate, onDelete, onClickCreateTime }: TaskItemProps) {
   const [editing, setEditing] = useState(false)
 
-  console.log(`[TaskItem] task`, task, `editing: ${editing}`);
+  console.log(`[TaskItem] itemKey: `, itemKey, 'task:', task, 'editing', editing);
 
-  if (editing || !task) {
+  if (editing || !('id' in task)) {
     return <TaskItemEditable
       itemKey={itemKey}
       task={task}
@@ -34,7 +34,7 @@ export function TaskItem({ itemKey, task, subjects, onCreate, onUpdate, onDelete
     />
   }
 
-  return (<li key={itemKey}>
+  return (<li>
     <span>{task.subjectTitle}</span>
     <span>{task.title}</span>
     <span>{TaskStatus[task.status]}</span>

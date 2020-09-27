@@ -17,9 +17,9 @@ export function SubjectListPage() {
     let pageParam = params.get('page');
 
     if (!pageParam) {
-      pageParam = '1'
-      const search = window.location.search;
-      window.location.search += `${search[0] === '?' ? '&' : '?'}page=${pageParam}`
+      params.set('page', '1');
+      window.location.search = params.toString();
+      return;
     }
 
     getSubjects(parseInt(pageParam, 10))
@@ -27,7 +27,7 @@ export function SubjectListPage() {
         setState({
           isLoading: false,
           subjects: res.content,
-          currentPage: res.pageable.pageNumber === 0 ? 1 : res.pageable.pageNumber,
+          currentPage: res.pageable.pageNumber + 1,
           totalPages: res.totalPages
         });
       }).catch(res => {
@@ -37,10 +37,6 @@ export function SubjectListPage() {
         })
       })
   }, [])
-
-  useEffect(() => {
-    console.log('useEffect', state)
-  })
 
   return (
     <div>
@@ -63,7 +59,7 @@ export function SubjectListPage() {
                 setState({
                   isLoading: false,
                   subjects: res.content,
-                  currentPage: res.pageable.pageNumber === 0 ? 1 : res.pageable.pageNumber,
+                  currentPage: res.pageable.pageNumber + 1,
                   totalPages: res.totalPages
                 });
               }).catch(res => {
@@ -95,7 +91,7 @@ export function SubjectListPage() {
                 setState({
                   isLoading: false,
                   subjects: res.content,
-                  currentPage: res.pageable.pageNumber === 0 ? 1 : res.pageable.pageNumber,
+                  currentPage: res.pageable.pageNumber + 1,
                   totalPages: res.totalPages
                 });
               }).catch(res => {
@@ -124,7 +120,7 @@ export function SubjectListPage() {
                 setState({
                   isLoading: false,
                   subjects: res.content,
-                  currentPage: res.pageable.pageNumber === 0 ? 1 : res.pageable.pageNumber,
+                  currentPage: res.pageable.pageNumber + 1,
                   totalPages: res.totalPages
                 });
               }).catch(res => {
@@ -144,28 +140,9 @@ export function SubjectListPage() {
             return;
           }
 
-          const search = window.location.search;
-          window.location.search += `${search[0] === '?' ? '&' : '?'}page=${page}`
-          setState({
-            ...state,
-            isLoading: true,
-            currentPage: page
-          })
-
-          getSubjects(page)
-          .then((res) => {
-            setState({
-              isLoading: false,
-              subjects: res.content,
-              currentPage: res.pageable.pageNumber === 0 ? 1 : res.pageable.pageNumber,
-              totalPages: res.totalPages
-            });
-          }).catch(res => {
-            setState({
-              ...state,
-              isLoading: false
-            })
-          })
+          const params = new URLSearchParams(window.location.search);
+          params.set('page', page + '');
+          window.location.search = params.toString()
         }}
       ></Pagination>
     </div>

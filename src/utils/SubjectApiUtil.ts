@@ -6,7 +6,7 @@ export function getSubjects(page: number = 1) {
 }
 
 export function createSubject(data: { title: string }) {
-  return ApiUtil.post(`/subjects`, data);
+  return ApiUtil.post(`/subjects`, data.title);
 }
 
 export function updateSubject(subject: Subject) {

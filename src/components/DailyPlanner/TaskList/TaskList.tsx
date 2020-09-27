@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { TaskItem } from './TaskItem';
 import { Task, TaskStatus, TaskFormData } from '../../../models/Task';
 import { Subject } from '../../../models/Subject';
@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { RouterPath } from '../../../constants/RouterPath';
 
 type TaskListProps = {
+  date: Date,
   subjects: Subject[],
   subjectMap: Map<number, Subject>,
   tasks: Task[],
@@ -15,7 +16,10 @@ type TaskListProps = {
   onClickCreateTime: (taskId: number) => void
 }
 
+type TaskListListState = (Task|TaskFormData)[]
+
 export function TaskList({ 
+  date,
   subjects, 
   subjectMap,
   tasks, 
@@ -24,29 +28,46 @@ export function TaskList({
   onDelete,
   onClickCreateTime
 }: TaskListProps) {
-  console.log(`[TaskList]`);
-  const list: (Task|null)[] = tasks;
-  const emptyItemCount = 10 - tasks.length;
-  
-  for (let i = 0; i < emptyItemCount; i += 1) {
-    list.push(null);
-  }
+  let [list, setList] = useState<TaskListListState>([]);
+
+  useEffect(() => {
+    console.log(`[TaskList]`);
+    const list: (Task|TaskFormData)[] = tasks;
+    const emptyItemCount = 10 - tasks.length;
+    console.log(`[TaskList] emptyItemCount: ${emptyItemCount}, list: ${tasks.length}`)
+
+    let subjectId = -1;
+    if (subjects.length) {
+      subjectId = subjects[0].id
+    }
+
+    for (let i = 0; i < emptyItemCount; i += 1) {
+      list.push({ subjectId, title: '', status: TaskStatus.NOT_STARTED, date: date });
+    }
+
+    setList(list)
+  }, [tasks, subjects])
+
+  console.log('list', list);
 
   return (<div>
     {subjects.length === 0 && <Link to={RouterPath.SUBJECT}>과목설정 먼저 해주세요.</Link>}
     <ul>
       {list.map((task, index) => {
-        return (<div key={`task-item-div-${task ? `task-${task.id}` : `${index}`}`}>
+        const key = 'id' in task ? task.id : index;
+        const subjectList = 'id' in task && !subjectMap.has(task.subjectId) ? [{id: task.subjectId, title: task.subjectTitle}].concat(subjects) : subjects;
+        
+        return (
           <TaskItem
-            itemKey={`task-item-${task ? `task-${task.id}` : `${index}`}`}
-            task={task || undefined}
-            subjects={task && !subjectMap.has(task.subjectId) ? [{id: task.subjectId, title: task.subjectTitle}].concat(subjects) : subjects}
+            key={key}
+            itemKey={key}
+            task={task}
+            subjects={subjectList}
             onCreate={onCreate}
             onUpdate={onUpdate} 
             onDelete={onDelete}
             onClickCreateTime={onClickCreateTime}
-          />
-        </div>);
+          />);
       })}
     </ul>
   </div>)

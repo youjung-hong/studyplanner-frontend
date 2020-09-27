@@ -30,7 +30,7 @@ export function Pagination({
       key={page}
       onClick={() => {onClickPageNumber(page)}}
     >
-      {page === currentPage ? <b>{page}</b> : {page}}
+      {page === currentPage ? <b>{page}</b> : page}
     </span>)}
     {endPage % 10 === 9 
       && totalPages > endPage 
