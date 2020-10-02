@@ -48,10 +48,7 @@ export function TaskList({
     setList(list)
   }, [tasks, subjects])
 
-  console.log('list', list);
-
-  return (<div>
-    {subjects.length === 0 && <Link to={RouterPath.SUBJECT}>과목설정 먼저 해주세요.</Link>}
+  return (<div className="TaskList">
     <ul>
       {list.map((task, index) => {
         const key = 'id' in task ? task.id : index;

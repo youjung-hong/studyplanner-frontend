@@ -13,7 +13,7 @@ export function TaskTimeTable({ taskTimes, onUpdateOrDeleteTime }: TaskTimeTable
 
   const setTimetable = () => {
     const taskItems = taskTimes.map(taskTime => new TaskItem(taskTime.startAt, taskTime.endAt, taskTime ));
-    timetable = new Timetable('timetableRoot', taskItems, onUpdateOrDeleteTime);
+    timetable = new Timetable('TaskTimeTable', taskItems, onUpdateOrDeleteTime);
   }
 
   const resetTimetable = (timetableRoot: HTMLDivElement) => {
@@ -35,5 +35,5 @@ export function TaskTimeTable({ taskTimes, onUpdateOrDeleteTime }: TaskTimeTable
     setTimetable();    
   }, [taskTimes]);
 
-  return (<div id="timetableRoot" ref={timetableRoot} style={{width: '100px'}}></div>)
+  return (<div id="TaskTimeTable" ref={timetableRoot} style={{width: '100px'}}></div>)
 } 

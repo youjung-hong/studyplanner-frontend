@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Task, TaskStatus, TaskFormData } from '../../../models/Task';
 import { Subject } from '../../../models/Subject';
+import { Select, Input, Button, Col, Row } from 'antd';
+
+const { Option } = Select
 
 type SubjectSelectorProps = {
   subjects: Subject[],
@@ -9,18 +12,17 @@ type SubjectSelectorProps = {
 }
 
 function SubjectSelector({ subjects, selectedId, onChange }: SubjectSelectorProps) {
-  return <select 
-    name="subject"
-    onChange={(e) => {
-      onChange(subjects[e.target.selectedIndex].id)
+  return <Select 
+    onChange={(value) => {
+      onChange(subjects[value].id)
     }}
     value={selectedId}
     disabled={!subjects.length}
   >
     {subjects.map(subject => {
-      return <option key={subject.id} value={subject.id}>[{subject.id}{subject.id === selectedId ? '*' : ''}]{subject.title}</option> 
+      return <Option key={subject.id} value={subject.id}>{subject.title}</Option> 
     })}
-  </select>
+  </Select>
 }
 
 type TaskItemEditableProps = {
@@ -48,7 +50,8 @@ export function TaskItemEditable({ itemKey, task, subjects, onCreate, onUpdate, 
   }, [task]);
 
   return (<li>
-    <span>
+    <Row>
+    <Col span={5}>
       <SubjectSelector
         subjects={subjects} 
         selectedId={state.subjectId} 
@@ -56,59 +59,32 @@ export function TaskItemEditable({ itemKey, task, subjects, onCreate, onUpdate, 
           setState({...state, subjectId})
         }}
       />
-    </span>
-    <span>
-      <input 
+    </Col>
+    <Col span={10}>
+      <Input 
         value={state.title}
         disabled={!subjects.length}
         onChange={(e) => {
           setState({...state, title: e.target.value});
         }}
       />
-    </span>
-    <span>
-      <input 
-        type="radio" 
-        disabled={!subjects.length} 
-        name={`${itemKey}`}
-        value={TaskStatus.NOT_STARTED} 
-        checked={state.status === TaskStatus.NOT_STARTED}
-        onChange={(e) => {
-          setState({...state, status: TaskStatus.NOT_STARTED})
+    </Col>
+    <Col span={5}>
+      <Select 
+        onChange={(value) => {
+          setState({...state, status: value})
         }}
-      ></input>시작전
-      <input 
-        type="radio" 
-        disabled={!subjects.length} 
-        name={`${itemKey}`}
-        value={TaskStatus.STARTED} 
-        checked={state.status === TaskStatus.STARTED}
-        onChange={(e) => {
-          setState({...state, status: TaskStatus.STARTED})
-        }}
-      ></input>시작
-      <input 
-        type="radio" 
-        disabled={!subjects.length} 
-        name={`${itemKey}`}
-        value={TaskStatus.FINISHED} 
-        checked={state.status === TaskStatus.FINISHED}
-        onChange={(e) => {
-          setState({...state, status: TaskStatus.FINISHED})
-        }}
-      ></input>완료
-      <input 
-        type="radio" 
-        disabled={!subjects.length} 
-        name={`${itemKey}`}
-        value={TaskStatus.PUT_OFF} 
-        checked={state.status === TaskStatus.PUT_OFF}
-        onChange={(e) => {
-          setState({...state, status: TaskStatus.PUT_OFF})
-        }}
-      ></input>미룸
-    </span>
-    <button
+        value={state.status}
+        disabled={!subjects.length}
+      >
+        <Option value={TaskStatus.NOT_STARTED}>시작전</Option>
+        <Option value={TaskStatus.STARTED}>시작</Option>
+        <Option value={TaskStatus.FINISHED}>끝</Option>
+        <Option value={TaskStatus.PUT_OFF}>미룸</Option>
+      </Select>
+    </Col>
+    <Col span={3}>
+    <Button
       disabled={!subjects.length}
       onClick={() => {
       if (!state.title) {
@@ -125,7 +101,9 @@ export function TaskItemEditable({ itemKey, task, subjects, onCreate, onUpdate, 
         ...state,
         date: task.date
       }) : onCreate(state)
-    }}>저장</button>
-    {task && <button onClick={onCancel}>취소</button>}
+    }}>저장</Button>
+    {'id' in Task && <Button onClick={onCancel}>취소</Button>}
+    </Col>
+    </Row>
   </li>)
 }

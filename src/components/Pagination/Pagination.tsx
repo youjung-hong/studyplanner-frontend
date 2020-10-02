@@ -10,15 +10,20 @@ export function Pagination({
     totalPages,
     onClickPageNumber,
   }: PaginationProps) {
-  const startPage = Math.floor(currentPage/10) * 10 + 1;
-  const endPage = Math.min(startPage + 9, totalPages)
+  let startPage = Math.floor(currentPage/10) * 10 + 1;
+  let endPage = Math.min(startPage + 9, totalPages)
+
+  if (totalPages === 0) {
+    startPage = endPage = 1;
+  }
+
   const pages: number[] = [];
 
   for(let i = startPage; i <= endPage; i += 1) {
     pages.push(i);
   }
 
-  return <div>
+  return <div className="Pagination">
     {startPage >= 11 && 
     <span 
       onClick={() => {

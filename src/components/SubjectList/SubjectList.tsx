@@ -10,7 +10,7 @@ type SubjectListProps = {
 }
 
 export function SubjectList({ subjects, onDelete, onUpdate }: SubjectListProps) {
-  return <ul>{subjects.map(subject => 
+  return <ul className="SubjectList">{subjects.map(subject => 
     <SubjectItem key={subject.id} subject={subject} onDelete={onDelete} onUpdate={onUpdate} />
   )}</ul>
 }

@@ -10,6 +10,10 @@ import { getTasks, createTask, updateTask, deleteTask } from '../../utils/TaskAp
 import { getTaskMeta } from '../../utils/TaskMetaApiUtil';
 import { TaskStatus, TaskFormData, Task } from '../../models/Task';
 import { TaskTimeTable } from './TaskTimeTable';
+import { Divider } from 'antd';
+import { Link } from 'react-router-dom';
+import { RouterPath } from '../../constants/RouterPath';
+import { count } from 'console';
 
 type DailyPlannerPlannerDataStateType = {
   subjects: Subject[],
@@ -225,8 +229,10 @@ export function DailyPlanner() {
   console.log(`[DailyPlanner] date: ${date}`);
 
   if (modalData.show) {
+    const task = plannerData.tasks.filter(task => task.id === modalData.taskId)[0];
+    
     return <TaskTimePopup
-      taskId={modalData.taskId}
+      task={task}
       taskTime={modalData.taskTime}
       onCreate={onCreateTime}
       onUpdate={onUpdateTime}
@@ -241,44 +247,48 @@ export function DailyPlanner() {
     />
   }
 
-  return (<div>
+  return (<div className="DailyPlanner">
     <PlannerHeader
       date={date}
       onChangeDate={setDate} 
     />
-    <div className="plannerContent">
-    <TaskList
-      date={date}
-      subjects={plannerData.subjects}
-      subjectMap={plannerData.subjectMap}
-      tasks={plannerData.tasks}
-      onCreate={onCreate}
-      onUpdate={onUpdate}
-      onDelete={onDelete}
-      onClickCreateTime={(taskId) => { setModalData({
-          show: true,
-          taskId: taskId,
-          taskTime: null
-        });
-      }}
-    ></TaskList>
-    <TaskTimeTable 
-      taskTimes={plannerData.taskTimes}
-      onUpdateOrDeleteTime={(taskTime) => {
-        const filtered = plannerData.taskTimes.filter(data => data.taskId === taskTime.taskId);
+    <Divider></Divider>
+    <div className="PlannerContent">
+      {plannerData.subjects.length === 0 ? <Link to={RouterPath.SUBJECT}>과목 설정 먼저 해주세요.</Link> :
+        <div className="PlannerContentArea">
+          <TaskList
+            date={date}
+            subjects={plannerData.subjects}
+            subjectMap={plannerData.subjectMap}
+            tasks={plannerData.tasks}
+            onCreate={onCreate}
+            onUpdate={onUpdate}
+            onDelete={onDelete}
+            onClickCreateTime={(taskId) => { setModalData({
+                show: true,
+                taskId: taskId,
+                taskTime: null
+              });
+            }}
+          ></TaskList>
+          <TaskTimeTable 
+            taskTimes={plannerData.taskTimes}
+            onUpdateOrDeleteTime={(taskTime) => {
+              const filtered = plannerData.taskTimes.filter(data => data.taskId === taskTime.taskId);
 
-        if (!filtered.length) {
-          alert('TaskId가 잘못되어 띄울 수가 없습니다.');
-          return;
-        }
+              if (!filtered.length) {
+                alert('TaskId가 잘못되어 띄울 수가 없습니다.');
+                return;
+              }
 
-        setModalData({
-          show: true,
-          taskId: taskTime.taskId,
-          taskTime: filtered[0]
-        }) 
-      }}
-    ></TaskTimeTable>
+              setModalData({
+                show: true,
+                taskId: taskTime.taskId,
+                taskTime: filtered[0]
+              }) 
+            }}
+          ></TaskTimeTable>
+        </div>}
     </div>
   </div>)
 }

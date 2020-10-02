@@ -3,6 +3,14 @@ import { SubjectInput } from './SubjectInput';
 import { SubjectList } from './SubjectList';
 import { getSubjects, createSubject, deleteSubject, updateSubject } from '../../utils/SubjectApiUtil';
 import { Pagination } from '../Pagination/Pagination';
+import { Divider } from 'antd'
+
+function gotoLastPageIfEmpty(totalPages: number) {
+  const params = new URLSearchParams(window.location.search);
+  params.set('page', `${totalPages}`);
+  window.location.search = params.toString();
+}
+
 
 export function SubjectListPage() {
   const [state, setState] = useState({
@@ -24,6 +32,11 @@ export function SubjectListPage() {
 
     getSubjects(parseInt(pageParam, 10))
       .then((res) => {
+        if (res.empty && res.pageable.pageNumber > 0) {
+          gotoLastPageIfEmpty(res.totalPages)
+          return;
+        }
+
         setState({
           isLoading: false,
           subjects: res.content,
@@ -39,7 +52,7 @@ export function SubjectListPage() {
   }, [])
 
   return (
-    <div>
+    <div className="SubjectListPage">
       <SubjectInput
         onCreate={(data) => {
           setState({
@@ -71,6 +84,7 @@ export function SubjectListPage() {
             })
         }}
       ></SubjectInput>
+      <Divider/>
       <SubjectList
         subjects={state.subjects} 
         onDelete={subjectId => {
@@ -88,6 +102,11 @@ export function SubjectListPage() {
             }).then(() => {
               getSubjects(state.currentPage)
               .then((res) => {
+                if (res.empty && res.pageable.pageNumber > 0) {
+                  gotoLastPageIfEmpty(res.totalPages)
+                  return;
+                }
+
                 setState({
                   isLoading: false,
                   subjects: res.content,
